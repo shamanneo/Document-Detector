@@ -13,6 +13,7 @@ CVideo::~CVideo()
 
 void CVideo::Run()
 {
+	CFoo foo ; 
 	if(m_cap.isOpened() == false)
 	{
 		std::cerr << "Can't open the camera, please check your camera." ; 
@@ -22,6 +23,8 @@ void CVideo::Run()
 	while(true)
 	{
 		m_cap >> img ;
+
+//		foo.Process(img) ;
 		cv::imshow("...", img) ; 
 		if(cv::waitKey(1) == 27)
 		{

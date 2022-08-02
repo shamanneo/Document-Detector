@@ -1,12 +1,13 @@
 #include <iostream>
+#include "Video.h"
 #include "Foo.h"
 
 int main()
 {
     try
     {
-        CFoo foo ; 
-        foo.Run() ;
+        CVideo video ; 
+        video.Run() ; 
     }
     catch(cv::Exception &e)
     {

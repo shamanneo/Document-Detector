@@ -77,10 +77,11 @@ void CFoo::Warp(const std::vector<cv::Point_<float>> &resPoints)
 	}
 }
 
-void CFoo::Process() 
+void CFoo::Process(cv::Mat &img) 
 {
 	std::vector<cv::Point_<float>> resPoints ; 
-	cv::Mat objectImg = m_origianlImg.clone() ; 
+	// cv::Mat objectImg = m_origianlImg.clone() ; 
+	cv::Mat objectImg = img.clone() ; 
 
 	// Convert image to grayscale.
 	cv::cvtColor(objectImg, objectImg, cv::COLOR_BGR2GRAY) ; 
@@ -90,33 +91,14 @@ void CFoo::Process()
 
 	// Get Contours.
 	Contours(objectImg, resPoints) ; 
+	
+	img = m_resultImg.clone() ; 
 
 	// Warp image.
-	Warp(resPoints) ;
+	// Warp(resPoints) ;
 	
 	// Final Showing.
-	Show() ; 
-}
-
-void CFoo::Run()
-{
-	std::vector<cv::Point_<float>> resPoints ; 
-	cv::Mat objectImg = m_origianlImg.clone() ; 
-
-	// Convert image to grayscale.
-	cv::cvtColor(objectImg, objectImg, cv::COLOR_BGR2GRAY) ; 
-
-	// Binaryzation.
-	cv::threshold(objectImg, objectImg, 150, 255, cv::THRESH_BINARY) ; 
-
-	// Get Contours.
-	Contours(objectImg, resPoints) ; 
-
-	// Warp image.
-	Warp(resPoints) ;
-	
-	// Final Showing.
-	Show() ; 
+	// Show() ; 
 }
 
 void CFoo::Show()

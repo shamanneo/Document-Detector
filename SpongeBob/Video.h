@@ -1,5 +1,5 @@
 #pragma once
-#include "opencv.h"
+#include "Foo.h"
 
 class CVideo
 {
