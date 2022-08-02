@@ -2,13 +2,15 @@
 
 CFoo::CFoo() 
 {
-    const cv::String &fileName = "C:\\Projects\\SpongeBob\\SpongeBob\\test-images\\test1.png" ;
+    const cv::String &fileName = "C:\\Projects\\Document-Detector\\SpongeBob\\test-images\\test1.png" ;
     m_origianlImg = cv::imread(fileName, cv::IMREAD_COLOR) ; 
 	if(m_origianlImg.empty())
 	{
 		std::cerr << 0 ;	
 	}
-	cv::resize(m_origianlImg, m_origianlImg, cv::Size(m_origianlImg.cols / 2, m_origianlImg.rows / 2)) ; 
+	m_width = static_cast<float>(m_origianlImg.cols / 3) ; 
+	m_height = static_cast<float>(m_origianlImg.rows / 3) ; 
+	cv::resize(m_origianlImg, m_origianlImg, cv::Size_<float>(m_width, m_height)) ; 
 } 
 
 CFoo::~CFoo()
@@ -16,7 +18,7 @@ CFoo::~CFoo()
 	cv::destroyAllWindows() ; 
 }
 
-void CFoo::Contours(cv::Mat &img, std::vector<cv::Point_<int>> &resPoints) 
+void CFoo::Contours(cv::Mat &img, std::vector<cv::Point_<float>> &resPoints) 
 {
 	const int contourElemSize = 1000 ; 
 	const int coordnates = 50 ; 
@@ -40,7 +42,7 @@ void CFoo::Contours(cv::Mat &img, std::vector<cv::Point_<int>> &resPoints)
 	}
 	for(auto it : resPoints)
 	{
-		cv::circle(tempImg, cv::Point_<int>(it.x, it.y), 10, cv::Scalar(255, 0, 0), 3) ; 
+		cv::circle(tempImg, cv::Point_<float>(it.x, it.y), 10, cv::Scalar(255, 0, 0), 3) ; 
 	}
 	const std::string contourText { std::format("Contours : {}, Corners : {}", newContours.size(), resPoints.size()) } ; 
 	cv::putText(tempImg, contourText, cv::Point_<int>(0, coordnates), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(255, 255, 255)) ; 
@@ -48,9 +50,36 @@ void CFoo::Contours(cv::Mat &img, std::vector<cv::Point_<int>> &resPoints)
 	m_resultImg = tempImg.clone() ;
 }
 
+void CFoo::Warp(const std::vector<cv::Point_<float>> &resPoints) 
+{
+	std::vector<cv::Point_<float>> corners(4) ; 
+	corners[0] = resPoints[1] ; 
+	corners[1] = resPoints[0] ; 
+	corners[2] = resPoints[2] ; 
+	corners[3] = resPoints[3] ; 
+
+	cv::Size_<float> size { m_width, m_height } ; 
+	std::vector<cv::Point_<float>> warpedCorners(4) ; 
+	warpedCorners[0] = cv::Point_<float>(0, 0) ; 
+	warpedCorners[1] = cv::Point_<float>(m_width, 0) ; 
+	warpedCorners[2] = cv::Point_<float>(0, m_height) ; 
+	warpedCorners[3] = cv::Point_<float>(m_width, m_height) ; 
+	cv::Mat tempImg(size, m_origianlImg.type()) ; 
+	m_warpedImg = tempImg.clone() ; 
+	try
+	{
+		cv::Mat transMatrix = cv::getPerspectiveTransform(corners, warpedCorners) ; 
+		cv::warpPerspective(m_origianlImg, m_warpedImg, transMatrix, size) ; 
+	}
+	catch(const cv::Exception &e)
+	{
+		throw e ; 
+	}
+}
+
 void CFoo::Run()
 {
-	std::vector<cv::Point_<int>> resPoints ; 
+	std::vector<cv::Point_<float>> resPoints ; 
 	cv::Mat objectImg = m_origianlImg.clone() ; 
 
 	// Convert image to grayscale.
@@ -62,6 +91,9 @@ void CFoo::Run()
 	// Get Contours.
 	Contours(objectImg, resPoints) ; 
 
+	// Warp image.
+	Warp(resPoints) ;
+	
 	// Final Showing.
 	Show() ; 
 }
@@ -70,8 +102,11 @@ void CFoo::Show()
 {
 	cv::Mat finalImg ; 
 	cv::hconcat(m_origianlImg, m_resultImg, finalImg) ; 
+	cv::hconcat(finalImg, m_warpedImg, finalImg) ; 
+	
 	cv::putText(finalImg, "Input", cv::Point_<int>(0, 15), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(255, 255, 255)) ; 
 	cv::putText(finalImg, "Output", cv::Point_<int>(m_origianlImg.cols, 15), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(255, 255, 255)) ; 
-	cv::imshow("Final", finalImg) ; 
+	cv::putText(finalImg, "Final", cv::Point_<int>(m_origianlImg.cols * 2, 15), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(255, 255, 255)) ; 
+	cv::imshow("Results", finalImg) ; 
 	cv::waitKey() ; 
 }
