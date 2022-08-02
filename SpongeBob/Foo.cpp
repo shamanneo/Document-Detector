@@ -2,15 +2,7 @@
 
 CFoo::CFoo() 
 {
-    const cv::String &fileName = "C:\\Projects\\Document-Detector\\SpongeBob\\test-images\\test1.png" ;
-    m_origianlImg = cv::imread(fileName, cv::IMREAD_COLOR) ; 
-	if(m_origianlImg.empty())
-	{
-		std::cerr << 0 ;	
-	}
-	m_width = static_cast<float>(m_origianlImg.cols / 3) ; 
-	m_height = static_cast<float>(m_origianlImg.rows / 3) ; 
-	cv::resize(m_origianlImg, m_origianlImg, cv::Size_<float>(m_width, m_height)) ; 
+    
 } 
 
 CFoo::~CFoo()
@@ -35,6 +27,7 @@ void CFoo::Contours(cv::Mat &img, std::vector<cv::Point_<float>> &resPoints)
 			newContours.push_back(contours[idx]) ; 
 		}
 	}
+	if(newContours.size() == 0) return ; 
 	cv::approxPolyDP(newContours[0], resPoints, cv::arcLength(newContours[0], true) * 0.02, true) ; 
 	if(resPoints.size() != 4)
 	{
@@ -46,7 +39,7 @@ void CFoo::Contours(cv::Mat &img, std::vector<cv::Point_<float>> &resPoints)
 	}
 	const std::string contourText { std::format("Contours : {}, Corners : {}", newContours.size(), resPoints.size()) } ; 
 	cv::putText(tempImg, contourText, cv::Point_<int>(0, coordnates), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(255, 255, 255)) ; 
-	cv::drawContours(tempImg, newContours, -1, cv::Scalar(0, 255, 0), 1, cv::LINE_AA) ; 
+	// cv::drawContours(tempImg, newContours, -1, cv::Scalar(0, 255, 0), 1, cv::LINE_AA) ; 
 	m_resultImg = tempImg.clone() ;
 }
 
@@ -77,28 +70,23 @@ void CFoo::Warp(const std::vector<cv::Point_<float>> &resPoints)
 	}
 }
 
-void CFoo::Process(cv::Mat &img) 
+void CFoo::Process(cv::Mat &img, cv::Mat &binImage) 
 {
 	std::vector<cv::Point_<float>> resPoints ; 
-	// cv::Mat objectImg = m_origianlImg.clone() ; 
 	cv::Mat objectImg = img.clone() ; 
-
-	// Convert image to grayscale.
+	m_origianlImg = img.clone() ; 
+	
+	// Convert color image to grayscale.
 	cv::cvtColor(objectImg, objectImg, cv::COLOR_BGR2GRAY) ; 
 
 	// Binaryzation.
 	cv::threshold(objectImg, objectImg, 150, 255, cv::THRESH_BINARY) ; 
+	binImage = objectImg.clone() ; 
 
 	// Get Contours.
 	Contours(objectImg, resPoints) ; 
 	
 	img = m_resultImg.clone() ; 
-
-	// Warp image.
-	// Warp(resPoints) ;
-	
-	// Final Showing.
-	// Show() ; 
 }
 
 void CFoo::Show()

@@ -20,12 +20,20 @@ void CVideo::Run()
 		return ; 
 	}
 	cv::Mat img ; 
+	cv::Mat binImg ; 
+	cv::Mat resImg ; 
 	while(true)
 	{
 		m_cap >> img ;
+		// img.resize(img.rows / 2, img.cols / 2) ; 
 
-//		foo.Process(img) ;
-		cv::imshow("...", img) ; 
+		foo.Process(img, binImg) ;
+		if(!img.empty()) 
+		{
+			// cv::cvtColor(binImg, binImg, cv::COLOR_GRAY2BGR) ; 
+			// cv::hconcat(binImg, img, resImg) ; 
+			cv::imshow("...", img) ; 
+		}
 		if(cv::waitKey(1) == 27)
 		{
 			break ; 

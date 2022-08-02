@@ -16,7 +16,7 @@ class CFoo
 		CFoo() ; 
 		~CFoo() ; 
 	public :
-		void Process(cv::Mat &img) ; 
+		void Process(cv::Mat &img, cv::Mat &binImage) ; 
 	public :
 		void Contours(cv::Mat &img, std::vector<cv::Point_<float>> &resPoints) ; 
 		void Warp(const std::vector<cv::Point_<float>> &resPoints) ; 
