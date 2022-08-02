@@ -8,6 +8,7 @@ class CVideo
 	public :
 		CVideo() ; 
 		~CVideo() ; 
-		
+	public :
+		void Run() ; 
 } ;
 
