@@ -53,10 +53,10 @@ void CFoo::Contours(cv::Mat &img, std::vector<cv::Point_<float>> &resPoints)
 void CFoo::Warp(const std::vector<cv::Point_<float>> &resPoints) 
 {
 	std::vector<cv::Point_<float>> corners(4) ; 
-	corners[0] = resPoints[1] ; 
-	corners[1] = resPoints[0] ; 
-	corners[2] = resPoints[2] ; 
-	corners[3] = resPoints[3] ; 
+	corners[0] = resPoints[1] ;  // Left-top.
+	corners[1] = resPoints[0] ;  // Right-top.
+	corners[2] = resPoints[2] ;  // Left-bottom.
+	corners[3] = resPoints[3] ;  // Right-bottom.
 
 	cv::Size_<float> size { m_width, m_height } ; 
 	std::vector<cv::Point_<float>> warpedCorners(4) ; 

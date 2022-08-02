@@ -149,9 +149,12 @@
   <ItemGroup>
     <ClCompile Include="Foo.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Video.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Foo.h" />
+    <ClInclude Include="opencv.h" />
+    <ClInclude Include="Video.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

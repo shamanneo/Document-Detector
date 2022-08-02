@@ -21,9 +21,18 @@
     <ClCompile Include="Foo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Video.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Foo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Video.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="opencv.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,9 +1,7 @@
 #pragma once
 #include <iostream>
 #include <format>
-
-#pragma warning (disable : 5054) 
-#include "opencv2/opencv.hpp" 
+#include "opencv.h"
 
 class CFoo
 { 
