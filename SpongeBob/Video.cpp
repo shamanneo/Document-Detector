@@ -25,14 +25,12 @@ void CVideo::Run()
 	while(true)
 	{
 		m_cap >> img ;
-		// img.resize(img.rows / 2, img.cols / 2) ; 
-
 		foo.Process(img, binImg) ;
 		if(!img.empty()) 
 		{
-			// cv::cvtColor(binImg, binImg, cv::COLOR_GRAY2BGR) ; 
-			// cv::hconcat(binImg, img, resImg) ; 
-			cv::imshow("...", img) ; 
+			cv::cvtColor(binImg, binImg, cv::COLOR_GRAY2BGR) ; 
+			cv::hconcat(binImg, img, resImg) ; 
+			cv::imshow("...", resImg) ; 
 		}
 		if(cv::waitKey(1) == 27)
 		{

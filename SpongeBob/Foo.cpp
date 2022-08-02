@@ -12,7 +12,7 @@ CFoo::~CFoo()
 
 void CFoo::Contours(cv::Mat &img, std::vector<cv::Point_<float>> &resPoints) 
 {
-	const int contourElemSize = 1000 ; 
+	const int contourElemSize = 600 ; 
 	const int coordnates = 50 ; 
 	std::vector<std::vector<cv::Point_<int>>> contours ; 
 	std::vector<std::vector<cv::Point_<int>>> newContours ; 
@@ -27,19 +27,19 @@ void CFoo::Contours(cv::Mat &img, std::vector<cv::Point_<float>> &resPoints)
 			newContours.push_back(contours[idx]) ; 
 		}
 	}
-	if(newContours.size() == 0) return ; 
-	cv::approxPolyDP(newContours[0], resPoints, cv::arcLength(newContours[0], true) * 0.02, true) ; 
-	if(resPoints.size() != 4)
+	if(newContours.size() == 0)
 	{
-		std::cerr << "The size of result vector is not 4." ; 
+		m_resultImg = tempImg.clone() ; 
+		return ; 
 	}
+	cv::approxPolyDP(newContours[0], resPoints, cv::arcLength(newContours[0], true) * 0.02, true) ; 
 	for(auto it : resPoints)
 	{
 		cv::circle(tempImg, cv::Point_<float>(it.x, it.y), 10, cv::Scalar(255, 0, 0), 3) ; 
 	}
 	const std::string contourText { std::format("Contours : {}, Corners : {}", newContours.size(), resPoints.size()) } ; 
 	cv::putText(tempImg, contourText, cv::Point_<int>(0, coordnates), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(255, 255, 255)) ; 
-	// cv::drawContours(tempImg, newContours, -1, cv::Scalar(0, 255, 0), 1, cv::LINE_AA) ; 
+	cv::drawContours(tempImg, newContours, -1, cv::Scalar(0, 255, 0), 1, cv::LINE_AA) ; 
 	m_resultImg = tempImg.clone() ;
 }
 
@@ -80,7 +80,7 @@ void CFoo::Process(cv::Mat &img, cv::Mat &binImage)
 	cv::cvtColor(objectImg, objectImg, cv::COLOR_BGR2GRAY) ; 
 
 	// Binaryzation.
-	cv::threshold(objectImg, objectImg, 150, 255, cv::THRESH_BINARY) ; 
+	cv::threshold(objectImg, objectImg, 120, 255, cv::THRESH_BINARY) ; 
 	binImage = objectImg.clone() ; 
 
 	// Get Contours.
